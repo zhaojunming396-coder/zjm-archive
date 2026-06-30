@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>手势 ASMR 实验室</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="stage">
+      <video id="camera" playsinline muted></video>
+      <canvas id="scene"></canvas>
+
+      <section class="introOverlay" id="introOverlay" aria-label="开场动画">
+        <div class="introSignal" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="introCopy">
+          <p>手势 ASMR 实验室</p>
+          <h1>把空气里的动作变成触感声音</h1>
+          <div class="introMaterials" aria-hidden="true">
+            <span>纸张</span>
+            <span>水滴</span>
+            <span>玻璃</span>
+            <span>织物</span>
+          </div>
+        </div>
+        <button class="introSkip" id="introSkip" type="button">进入</button>
+      </section>
+
+      <section class="hud" aria-label="手势 ASMR 控制区">
+        <div class="brand">
+          <p>手势 ASMR 实验室</p>
+          <span id="status">点击“开始”进入声音空间</span>
+        </div>
+
+        <div class="controls">
+          <button class="primary" id="startButton" type="button">开始</button>
+          <div class="modeSwitch" role="tablist" aria-label="声音材质">
+            <button class="mode active" type="button" data-mode="paper">纸张</button>
+            <button class="mode" type="button" data-mode="water">水滴</button>
+            <button class="mode" type="button" data-mode="glass">玻璃</button>
+            <button class="mode" type="button" data-mode="fabric">织物</button>
+          </div>
+          <label class="toggle">
+            <input id="cameraToggle" type="checkbox" checked />
+            <span>摄像头</span>
+          </label>
+          <label class="volumeControl">
+            <span>音量</span>
+            <input id="volumeSlider" type="range" min="0" max="100" value="95" />
+          </label>
+          <label class="importControl">
+            <input id="sampleInput" type="file" accept="audio/*" multiple />
+            <span>导入素材</span>
+          </label>
+        </div>
+      </section>
+
+      <aside class="readout" aria-label="手势状态">
+        <div>
+          <span>手势</span>
+          <strong id="gestureName">等待</strong>
+        </div>
+        <div>
+          <span>材质</span>
+          <strong id="materialName">纸张</strong>
+        </div>
+        <div>
+          <span>动作强度</span>
+          <strong id="motionValue">0%</strong>
+        </div>
+      </aside>
+
+      <div class="gestureDock" aria-hidden="true">
+        <span>捏合</span>
+        <span>指向</span>
+        <span>双指</span>
+        <span>摩擦</span>
+        <span>张开</span>
+        <span>靠近</span>
+        <span>挥动</span>
+        <span>握拳</span>
+      </div>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
