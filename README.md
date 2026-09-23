@@ -66,6 +66,7 @@ http://127.0.0.1:8031/src/pages/workouts/index.html
 - 训练记录逻辑：`src/data/workouts/workoutSession.js`
 - 建议重量逻辑：`src/data/workouts/weightRecommendation.js`
 - 数据分析逻辑：`src/data/workouts/workoutAnalytics.js`
+- 训练总结组合逻辑：`src/data/workouts/workoutSummary.js`
 - 营养补剂逻辑：`src/data/workouts/dailyNutrition.js`
 - 本地备份逻辑：`src/data/workouts/localBackup.js`
 
