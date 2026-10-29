@@ -1,0 +1,52 @@
+name: Consolidate archived projects
+on:
+  push:
+    paths:
+      - .github/workflows/archive-projects.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: consolidate-archived-projects
+  cancel-in-progress: false
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Import original histories and verify every project tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'zhaojunming396-coder'
+          git config user.email '292696183+zhaojunming396-coder@users.noreply.github.com'
+          git rm -r -- . ':!.github/workflows/archive-projects.yml'
+          git commit -m 'Prepare archive root for original project trees'
+          projects=(adaptive-training-companion Hand-ASMR-Lab date-countdown-tool texas-holdem-tool ZJM-)
+          labels=('自适应训练助手' '手势 ASMR 实验室' '日期倒计时工具' '德州扑克工具' 'ZJM 原项目')
+          rows_file=$(mktemp)
+          for i in "${!projects[@]}"; do
+            project="${projects[$i]}"
+            source="https://github.com/zhaojunming396-coder/$project"
+            git fetch --no-tags "$source.git" HEAD
+            source_sha=$(git rev-parse FETCH_HEAD)
+            source_tree=$(git rev-parse "$source_sha^{tree}")
+            git merge -s ours --no-commit --allow-unrelated-histories "$source_sha"
+            git read-tree --prefix="$project/" -u "$source_sha"
+            git commit -m "Archive $project with original default-branch history"
+            test "$(git rev-parse "HEAD:$project")" = "$source_tree"
+            git merge-base --is-ancestor "$source_sha" HEAD
+            printf '| `%s/` | %s | [%s](%s) | `%s` |\n' "$project" "${labels[$i]}" "$project" "$source" "$source_sha" >> "$rows_file"
+            echo "VERIFIED $project $source_sha $source_tree"
+          done
+          {
+            printf '# zjm-archive\n\n赵俊铭的旧项目归档。新项目使用 [zjm-center](https://github.com/zhaojunming396-coder/zjm-center)。\n\n'
+            printf '| 子目录 | 项目 | 原仓库 | 来源提交 |\n| --- | --- | --- | --- |\n'
+            cat "$rows_file"
+            printf '\n归档日期：2026-10-29。各子目录完整保留原仓库默认分支的文件树（含可执行权限），并通过合并提交保留该分支可达的原始 Git 历史及提交 SHA。原来的 5 个仓库均保留。\n\n归档不迁移 Issues、PR、Releases 或仓库设置。工作流保留在 `.github/workflows/archive-projects.yml`，用于记录归档过程。\n'
+          } > README.md
+          git add README.md
+          git commit -m 'Document archived projects and preserved source histories'
+          git push origin HEAD:main
