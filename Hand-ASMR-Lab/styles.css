@@ -1,0 +1,580 @@
+:root {
+  color-scheme: light;
+  --bg: #fbf6ec;
+  --panel: rgba(255, 252, 246, 0.58);
+  --panel-strong: rgba(255, 252, 246, 0.76);
+  --line: rgba(83, 70, 50, 0.2);
+  --text: #2f2a22;
+  --muted: #746a5f;
+  --accent: #b58c51;
+  --accent-ink: #fffaf0;
+  --glow: rgba(202, 163, 93, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 620px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(255, 250, 238, 0.08), rgba(242, 248, 242, 0.04)),
+    url("assets/asmr-bg.png");
+  background-position:
+    center,
+    center,
+    center,
+    center,
+    center;
+  background-size:
+    48px 48px,
+    48px 48px,
+    auto,
+    auto,
+    cover;
+}
+
+#camera,
+#scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#camera {
+  object-fit: cover;
+  transform: scaleX(-1);
+  opacity: 1;
+}
+
+#scene {
+  z-index: 1;
+}
+
+.introOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.48), transparent 28%),
+    linear-gradient(180deg, rgba(255, 250, 238, 0.94), rgba(236, 245, 239, 0.82));
+  color: var(--text);
+  transition:
+    opacity 680ms ease,
+    visibility 680ms ease;
+}
+
+.introOverlay::before,
+.introOverlay::after {
+  position: absolute;
+  width: min(48vw, 520px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(83, 70, 50, 0.14);
+  border-radius: 50%;
+  content: "";
+  opacity: 0;
+  transform: scale(0.42);
+  animation: introRipple 2600ms ease-out forwards;
+}
+
+.introOverlay::after {
+  width: min(66vw, 680px);
+  animation-delay: 420ms;
+}
+
+.introOverlay.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.introSignal {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.introSignal span {
+  position: absolute;
+  width: min(24vw, 210px);
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(181, 140, 81, 0.5), transparent);
+  opacity: 0;
+  transform: translateY(var(--intro-y, 0)) scaleX(0.28);
+  animation: introWave 1900ms ease-in-out forwards;
+}
+
+.introSignal span:nth-child(1) {
+  --intro-y: -42px;
+  animation-delay: 180ms;
+}
+
+.introSignal span:nth-child(2) {
+  --intro-y: 0;
+  animation-delay: 360ms;
+}
+
+.introSignal span:nth-child(3) {
+  --intro-y: 42px;
+  animation-delay: 540ms;
+}
+
+.introCopy {
+  position: relative;
+  z-index: 1;
+  width: min(88vw, 680px);
+  text-align: center;
+  animation: introCopyIn 980ms ease-out both;
+}
+
+.introCopy p {
+  margin: 0 0 14px;
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.introCopy h1 {
+  margin: 0;
+  font-size: clamp(32px, 6vw, 68px);
+  font-weight: 750;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.introMaterials {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.introMaterials span {
+  padding: 8px 12px;
+  border: 1px solid rgba(83, 70, 50, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.34);
+  color: var(--muted);
+  font-size: 13px;
+  animation: introMaterialIn 900ms ease-out both;
+}
+
+.introMaterials span:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.introMaterials span:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.introMaterials span:nth-child(4) {
+  animation-delay: 360ms;
+}
+
+.introSkip {
+  position: absolute;
+  right: 24px;
+  bottom: 22px;
+  z-index: 1;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid rgba(83, 70, 50, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.hud,
+.readout,
+.gestureDock {
+  position: absolute;
+  z-index: 2;
+}
+
+.hud {
+  top: 22px;
+  left: 22px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.brand,
+.readout,
+.gestureDock,
+.controls {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow:
+    0 14px 38px rgba(82, 73, 58, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px) saturate(1.02);
+}
+
+.brand {
+  min-width: 260px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: var(--panel-strong);
+}
+
+.brand p {
+  margin: 0 0 3px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.brand span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  pointer-events: auto;
+}
+
+.primary,
+.mode {
+  min-height: 38px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.primary {
+  padding: 0 18px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  box-shadow: 0 0 28px var(--glow);
+}
+
+.modeSwitch {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(64px, 1fr));
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.mode {
+  padding: 0 13px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.mode.active {
+  border-color: color-mix(in srgb, var(--accent), white 18%);
+  background: color-mix(in srgb, var(--accent), white 72%);
+  color: #2f281d;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 10px;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.volumeControl {
+  display: grid;
+  grid-template-columns: auto 86px;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 10px;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.volumeControl input {
+  width: 86px;
+  accent-color: var(--accent);
+}
+
+.importControl {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.44);
+  color: var(--text);
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.importControl input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+.readout {
+  left: 22px;
+  bottom: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(98px, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.readout div {
+  min-width: 0;
+  padding: 13px 14px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.readout span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.readout strong {
+  display: block;
+  overflow: hidden;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gestureDock {
+  right: 22px;
+  bottom: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 8px;
+  padding: 9px;
+  border-radius: 8px;
+}
+
+.gestureDock span {
+  min-width: 58px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.32);
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+body[data-mode="paper"] {
+  --accent: #b58c51;
+  --glow: rgba(181, 140, 81, 0.26);
+}
+
+body[data-mode="water"] {
+  --accent: #458f8d;
+  --glow: rgba(69, 143, 141, 0.26);
+}
+
+body[data-mode="glass"] {
+  --accent: #5f91ad;
+  --glow: rgba(95, 145, 173, 0.24);
+}
+
+body[data-mode="fabric"] {
+  --accent: #b06f8f;
+  --glow: rgba(176, 111, 143, 0.24);
+}
+
+@keyframes introRipple {
+  0% {
+    opacity: 0;
+    transform: scale(0.42);
+  }
+
+  18% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.28);
+  }
+}
+
+@keyframes introWave {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--intro-y)) scaleX(0.28);
+  }
+
+  35% {
+    opacity: 0.85;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(var(--intro-y)) scaleX(1.85);
+  }
+}
+
+@keyframes introCopyIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes introMaterialIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .introOverlay,
+  .introOverlay::before,
+  .introOverlay::after,
+  .introSignal span,
+  .introCopy,
+  .introMaterials span {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .stage {
+    min-height: 100vh;
+  }
+
+  .introCopy h1 {
+    font-size: clamp(32px, 11vw, 48px);
+  }
+
+  .introSkip {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .hud {
+    align-items: stretch;
+    flex-direction: column;
+    top: 14px;
+    left: 14px;
+    right: 14px;
+  }
+
+  .brand {
+    width: 100%;
+  }
+
+  .controls {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .primary {
+    flex: 1 1 86px;
+  }
+
+  .modeSwitch {
+    flex: 4 1 260px;
+    grid-template-columns: repeat(2, minmax(78px, 1fr));
+  }
+
+  .volumeControl {
+    flex: 1 1 180px;
+    grid-template-columns: auto 1fr;
+  }
+
+  .volumeControl input {
+    width: 100%;
+  }
+
+  .importControl {
+    flex: 1 1 140px;
+  }
+
+  .readout {
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .gestureDock {
+    display: none;
+  }
+}
