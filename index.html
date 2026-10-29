@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>德州扑克牌桌分析器</title>
+    <link rel="stylesheet" href="styles.css?v=player-style-tags" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">个人复盘牌桌</p>
+          <h1>德州扑克牌桌分析器</h1>
+        </div>
+        <div class="top-actions">
+          <button type="button" class="ghost-button" id="resetButton">重置</button>
+          <button type="button" class="primary-button" id="analyzeButton">分析</button>
+        </div>
+      </header>
+
+      <section class="notice">
+        个人学习、复盘和训练工具。不要在真实牌局中实时使用。
+      </section>
+
+      <section class="table-settings panel">
+        <label class="field compact-field">
+          <span>玩家人数</span>
+          <select id="playerCount">
+            <option value="5">5人桌</option>
+            <option value="6">6人桌</option>
+            <option value="7">7人桌</option>
+            <option value="8">8人桌</option>
+            <option value="9" selected>9人桌</option>
+          </select>
+        </label>
+        <label class="field compact-field">
+          <span>当前庄位</span>
+          <select id="dealerSeat">
+            <option value="庄位" selected>庄位</option>
+            <option value="小盲">小盲</option>
+            <option value="我">我</option>
+            <option value="抓位1">抓位1</option>
+            <option value="抓位2">抓位2</option>
+            <option value="抓位3">抓位3</option>
+            <option value="抓位4">抓位4</option>
+            <option value="抓位5">抓位5</option>
+            <option value="抓位6">抓位6</option>
+          </select>
+        </label>
+        <label class="field compact-field">
+          <span>小盲</span>
+          <input id="smallBlind" type="number" inputmode="numeric" min="0" value="1" />
+        </label>
+        <label class="field compact-field">
+          <span>大盲</span>
+          <input id="bigBlind" type="number" inputmode="numeric" min="0" value="2" />
+        </label>
+        <button type="button" class="ghost-button" id="applyBlindsButton">应用盲注</button>
+        <button type="button" class="ghost-button" id="endRoundButton">一圈结束</button>
+      </section>
+
+      <section class="table-layout">
+        <div class="poker-table" aria-label="德州牌桌">
+          <section class="seat seat-utg villain-seat" data-villain="抓位6">
+            <button class="dealer-chip" type="button" data-dealer="抓位6" aria-label="设为庄位">D</button>
+            <button class="seat-select" type="button"><span class="seat-name">抓位6</span><span class="seat-cards">选择</span></button>
+            <label class="bet-box"><span>下注</span><input type="number" inputmode="numeric" min="0" value="0" data-bet="抓位6" /></label>
+            <button class="fold-toggle" type="button" data-fold="抓位6">弃牌</button>
+          </section>
+          <section class="seat seat-utg1 villain-seat" data-villain="抓位5">
+            <button class="dealer-chip" type="button" data-dealer="抓位5" aria-label="设为庄位">D</button>
+            <button class="seat-select" type="button"><span class="seat-name">抓位5</span><span class="seat-cards">选择</span></button>
+            <label class="bet-box"><span>下注</span><input type="number" inputmode="numeric" min="0" value="0" data-bet="抓位5" /></label>
+            <button class="fold-toggle" type="button" data-fold="抓位5">弃牌</button>
+          </section>
+          <section class="seat seat-mp villain-seat" data-villain="抓位4">
+            <button class="dealer-chip" type="button" data-dealer="抓位4" aria-label="设为庄位">D</button>
+            <button class="seat-select" type="button"><span class="seat-name">抓位4</span><span class="seat-cards">选择</span></button>
+            <label class="bet-box"><span>下注</span><input type="number" inputmode="numeric" min="0" value="0" data-bet="抓位4" /></label>
+            <button class="fold-toggle" type="button" data-fold="抓位4">弃牌</button>
+          </section>
+          <section class="seat seat-lj villain-seat" data-villain="抓位3">
+            <button class="dealer-chip" type="button" data-dealer="抓位3" aria-label="设为庄位">D</button>
+            <button class="seat-select" type="button"><span class="seat-name">抓位3</span><span class="seat-cards">选择</span></button>
+            <label class="bet-box"><span>下注</span><input type="number" inputmode="numeric" min="0" value="0" data-bet="抓位3" /></label>
+            <button class="fold-toggle" type="button" data-fold="抓位3">弃牌</button>
+          </section>
+          <section class="seat seat-hj villain-seat" data-villain="抓位2">
+            <button class="dealer-chip" type="button" data-dealer="抓位2" aria-label="设为庄位">D</button>
+            <button class="seat-select" type="button"><span class="seat-name">抓位2</span><span class="seat-cards">选择</span></button>
+            <label class="bet-box"><span>下注</span><input type="number" inputmode="numeric" min="0" value="0" data-bet="抓位2" /></label>
+            <button class="fold-toggle" type="button" data-fold="抓位2">弃牌</button>
+          </section>
+          <section class="seat seat-co villain-seat" data-villain="抓位1">
+            <button class="dealer-chip" type="button" data-dealer="抓位1" aria-label="设为庄位">D</button>
+            <button class="seat-select" type="button"><span class="seat-name">抓位1</span><span class="seat-cards">选择</span></button>
+            <label class="bet-box"><span>下注</span><input type="number" inputmode="numeric" min="0" value="0" data-bet="抓位1" /></label>
+            <button class="fold-toggle" type="button" data-fold="抓位1">弃牌</button>
+          </section>
+          <section class="seat seat-btn villain-seat active" data-villain="庄位">
+            <button class="dealer-chip is-dealer" type="button" data-dealer="庄位" aria-label="当前庄位">D</button>
+            <button class="seat-select" type="button"><span class="seat-name">庄位 对手</span><span class="seat-cards">选择</span></button>
+            <label class="bet-box"><span>下注</span><input type="number" inputmode="numeric" min="0" value="0" data-bet="庄位" /></label>
+            <button class="fold-toggle" type="button" data-fold="庄位">弃牌</button>
+          </section>
+          <section class="seat seat-sb villain-seat" data-villain="小盲">
+            <button class="dealer-chip" type="button" data-dealer="小盲" aria-label="设为庄位">D</button>
+            <button class="seat-select" type="button"><span class="seat-name">小盲</span><span class="seat-cards">选择</span></button>
+            <label class="bet-box"><span>下注</span><input type="number" inputmode="numeric" min="0" value="1" data-bet="小盲" /></label>
+            <button class="fold-toggle" type="button" data-fold="小盲">弃牌</button>
+          </section>
+
+          <section class="seat hero-seat" aria-label="我的手牌">
+            <button class="dealer-chip" type="button" data-dealer="我" aria-label="设为庄位">D</button>
+            <span class="seat-name">我 大盲</span>
+            <div class="hole-cards">
+              <button type="button" class="card-slot" data-zone="hero" data-index="0">+</button>
+              <button type="button" class="card-slot" data-zone="hero" data-index="1">+</button>
+            </div>
+            <span class="equity-badge" id="heroEquity">--</span>
+            <label class="bet-box hero-bet"><span>下注</span><input type="number" inputmode="numeric" min="0" value="2" data-bet="我" /></label>
+            <button class="fold-toggle hero-fold" type="button" id="heroFoldButton">我弃牌</button>
+          </section>
+
+          <section class="board-area" aria-label="公共牌">
+            <div class="table-pot">
+              <span>总下注</span>
+              <strong id="tablePotTotal">0</strong>
+              <small>积分</small>
+            </div>
+            <label class="board-text-field">
+              <span>公共牌</span>
+            </label>
+            <div class="board-cards">
+              <button type="button" class="card-slot board-slot" data-zone="board" data-index="0">+</button>
+              <button type="button" class="card-slot board-slot" data-zone="board" data-index="1">+</button>
+              <button type="button" class="card-slot board-slot" data-zone="board" data-index="2">+</button>
+              <button type="button" class="card-slot board-slot" data-zone="board" data-index="3">+</button>
+              <button type="button" class="card-slot board-slot" data-zone="board" data-index="4">+</button>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side-panel">
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>对手可能手牌</h2>
+              <span class="status-pill" id="activeVillain">庄位</span>
+            </div>
+            <textarea id="villainRange" rows="4" spellcheck="false">22+, A2s+, KTs+, QTs+, JTs, T9s, ATo+, KQo</textarea>
+            <div class="quick-ranges">
+              <button type="button" data-range="22+, A2s+, KTs+, QTs+, JTs, T9s, ATo+, KQo">标准</button>
+              <button type="button" data-range="66+, A9s+, KQs, AJo+, KQo">紧</button>
+              <button type="button" data-range="22+, A2s+, K2s+, Q5s+, J7s+, T7s+, 97s+, 86s+, 75s+, 64s+, 54s, A2o+, K9o+, Q9o+, J9o+, T9o">松</button>
+            </div>
+            <label class="field">
+              <span>模拟次数</span>
+              <select id="iterations">
+                <option value="3000">快速</option>
+                <option value="10000" selected>标准</option>
+                <option value="30000">精细</option>
+              </select>
+            </label>
+            <p class="error-message" id="errorMessage" role="alert"></p>
+          </section>
+
+          <section class="panel result-panel">
+            <div class="panel-heading">
+              <h2>分析结果</h2>
+              <span class="status-pill" id="rangeCount">-- 组合</span>
+            </div>
+            <div class="pot-summary">
+              <span>当前底池</span>
+              <strong id="potTotal">0 积分</strong>
+            </div>
+            <div class="pot-summary">
+              <span>还要跟</span>
+              <strong id="callAmount">0 积分</strong>
+            </div>
+            <div class="pot-summary">
+              <span>至少需要胜率</span>
+              <strong id="neededRate">--</strong>
+            </div>
+            <div class="meter">
+              <div class="meter-fill" id="equityFill"></div>
+            </div>
+            <div class="stats-grid">
+              <article>
+                <span id="winRate">--</span>
+                <small>胜率</small>
+              </article>
+              <article>
+                <span id="tieRate">--</span>
+                <small>平局</small>
+              </article>
+              <article>
+                <span id="loseRate">--</span>
+                <small>落后</small>
+              </article>
+            </div>
+            <div class="insight-list" id="insights"></div>
+          </section>
+        </aside>
+      </section>
+
+      <section class="range-preview panel">
+        <h2>对手可能拿到的牌</h2>
+        <div id="rangePreview"></div>
+      </section>
+    </main>
+
+    <dialog class="card-picker" id="cardPicker" aria-labelledby="pickerTitle">
+      <div class="picker-head">
+        <h2 id="pickerTitle">选择牌</h2>
+        <button type="button" class="icon-button" id="clearCardButton">清空</button>
+        <button type="button" class="icon-button" id="closePickerButton">关闭</button>
+      </div>
+      <div class="suit-grid" id="suitGrid"></div>
+    </dialog>
+
+    <script src="app.js?v=player-style-tags"></script>
+  </body>
+</html>
